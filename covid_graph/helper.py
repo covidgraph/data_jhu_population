@@ -11,7 +11,8 @@ def setup_db(graph):
     indexes = [
         ['Country', 'name'],
         ['Province', 'name'],
-        ['Update', 'uuid']
+        ['Update', 'uuid'],
+        ['AgeGroup', 'group']
     ]
 
     for index in indexes:

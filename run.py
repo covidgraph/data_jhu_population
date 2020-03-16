@@ -7,7 +7,7 @@ logging.getLogger('py2neo.connect.bolt').setLevel(logging.WARNING)
 logging.getLogger('py2neo.connect').setLevel(logging.WARNING)
 
 
-from covid_graph import download, load_to_neo4j, helper
+from covid_graph import download, load_to_neo4j, helper, post
 
 ROOT_DIR = '/Users/mpreusse/Downloads/covid'
 NEO4J_HOST = 'localhost'
@@ -26,4 +26,10 @@ if not os.path.exists(ROOT_DIR):
 jhu_zip_file = download.download_jhu(ROOT_DIR, skip_existing=True)
 jhu_dir = download.unzip_file(jhu_zip_file, skip_existing=True)
 
+wpp_csv_file = download.download_population_data(ROOT_DIR, skip_existing=True)
+
 load_to_neo4j.read_daily_report_JHU(jhu_dir, graph)
+load_to_neo4j.load_wpp_data(ROOT_DIR, graph)
+
+# post process
+post.set_latest_update(graph)
