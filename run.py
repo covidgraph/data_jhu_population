@@ -10,11 +10,11 @@ logging.getLogger('py2neo.connect').setLevel(logging.WARNING)
 from covid_graph import download, load_to_neo4j, helper, post
 
 ROOT_DIR = os.getenv('ROOT_DIR')
-NEO4J_HOST = os.getenv('NEO4J_HOST')
+NEO4J_URL = os.getenv('NEO4J_URL')
 NEO4J_USER = os.getenv('NEO4J_USER')
 NEO4J_PASSWORD = os.getenv('NEO4J_PASSWORD')
 
-graph = py2neo.Graph(host=NEO4J_HOST, user=NEO4J_USER, password=NEO4J_PASSWORD)
+graph = py2neo.Graph(NEO4J_URL, user=NEO4J_USER, password=NEO4J_PASSWORD)
 
 
 # setup DB
