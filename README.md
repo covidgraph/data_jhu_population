@@ -1,11 +1,17 @@
 # A Knowledge Graph on Covid-19
 
+A knowledge graph that integrates case numbers reported by John Hopkins University and population data from the UN. Work in progress, looking for more datasources, PR welcome!
+
 The graph is available in a Neo4j Sandbox: https://10-0-1-172-33065.neo4jsandbox.com/browser/
 
 **User:** public
+
 **Password:** public
 
-You can add it to Neo4j Desktop with the bolt URL, same user/password: bolt://100.24.206.62:33064
+You can add it to Neo4j Desktop with the bolt URL, same user/password: `bolt://100.24.206.62:33064`
+
+## Datamodel 
+![Data Model](datamodel.png)
 
 ## Queries
 
@@ -82,7 +88,3 @@ Data: https://github.com/CSSEGISandData/COVID-19
 The UN gathers data on world population statistics and publishes the world population prospects: https://population.un.org/wpp/
 
 The latest data set in CSV format can be found here: https://population.un.org/wpp/Download/Standard/CSV/
-
-
-## Datamodel 
-![Data Model](datamodel.png)
