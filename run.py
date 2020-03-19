@@ -25,8 +25,8 @@ if not os.path.exists(ROOT_DIR):
 ###
 
 # download data
-jhu_zip_file = download.download_jhu(ROOT_DIR, skip_existing=True)
-jhu_dir = download.unzip_file(jhu_zip_file, skip_existing=True)
+jhu_zip_file = download.download_jhu(ROOT_DIR)
+jhu_dir = download.unzip_file(jhu_zip_file)
 
 wpp_csv_file = download.download_population_data(ROOT_DIR, skip_existing=True)
 ###

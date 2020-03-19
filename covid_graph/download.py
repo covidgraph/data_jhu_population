@@ -2,6 +2,7 @@ import os
 import requests
 import zipfile
 import logging
+import shutil
 
 log = logging.getLogger(__name__)
 
@@ -73,6 +74,8 @@ def unzip_file(zip_file_path, skip_existing=True):
     """
     Unzip a zip file at the same directory. Return the path to the unzipped directory.
 
+    Note: By default the data is not overwritten. Remove target directory before unzipping.
+
     :param zip_file_path: Path to the zip file.
     :param skip_existing: Do not unzip if directory exists. Default is false, set to true for dev.
     :return: Path to unzipped directory.
@@ -86,6 +89,11 @@ def unzip_file(zip_file_path, skip_existing=True):
         if os.path.exists(target_directory):
             log.info("Unzipped directory exists, skip_existing is True, do not download again.")
             return target_directory
+
+    if os.path.exists(target_directory):
+        log.debug("Target directory exists already {}".format(target_directory))
+        log.debug("Delete to unzip again.")
+        shutil.rmtree(target_directory)
 
     log.debug('Unzip {} to {}'.format(zip_file_path, target_directory))
 
