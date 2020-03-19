@@ -4,9 +4,7 @@ A knowledge graph that integrates case numbers reported by John Hopkins Universi
 
 The graph is available in a Neo4j Sandbox: https://10-0-1-172-33065.neo4jsandbox.com/browser/
 
-**User:** public
-
-**Password:** public
+**User:** public, **Password:** public
 
 You can add it to Neo4j Desktop with the bolt URL, same user/password: `bolt://100.24.206.62:33064`
 
