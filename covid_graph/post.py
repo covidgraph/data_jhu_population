@@ -16,9 +16,9 @@ def set_latest_update(graph):
 
     log.info("Set label :Latest on alst update for each province")
 
-    q = """MATCH (p:Province)-[:REPORTED]->(u:Update)
+    q = """MATCH (p:Province)-[:REPORTED]->(u:DailyReport)
 WITH p, max(u.date) AS latest_date
-MATCH (p)-[:REPORTED]->(latest_u:Update)
+MATCH (p)-[:REPORTED]->(latest_u:DailyReport)
 WHERE latest_u.date = latest_date
 SET latest_u:Latest"""
 

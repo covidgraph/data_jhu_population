@@ -49,10 +49,10 @@ def read_daily_report_data_csv_JHU(file):
 
     countries = NodeSet(['Country'], ['name'])
     provinces = NodeSet(['Province'], ['name'])
-    updates = NodeSet(['Update'], ['uuid'])
+    updates = NodeSet(['DailyReport'], ['uuid'])
     province_in_country = RelationshipSet('PART_OF', ['Province'], ['Country'], ['name'], ['name'])
     province_in_country.unique = True
-    province_rep_update = RelationshipSet('REPORTED', ['Province'], ['Update'], ['name'], ['uuid'])
+    province_rep_update = RelationshipSet('REPORTED', ['Province'], ['DailyReport'], ['name'], ['uuid'])
 
     with open(file, 'rt') as csvfile:
         rows = csv.reader(csvfile, delimiter=',', quotechar='"')
