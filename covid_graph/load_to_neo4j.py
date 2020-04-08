@@ -43,10 +43,16 @@ def read_daily_report_data_csv_JHU(file):
     """
     Extract data from a single daile report file from JHU.
 
+    Old format (until 03-21-2020)
+        Province/State,Country/Region,Last Update,Confirmed,Deaths,Recovered,Latitude,Longitude
+    New format:
+        FIPS,Admin2,Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths,Recovered,Active,Combined_Key
+
     :param file: Path to the CSV file
     :return:
     """
     log.info('Read JHU CSV file {}'.format(file))
+    # understand if old fromat (
 
     countries = NodeSet(['Country'], ['name'])
     provinces = NodeSet(['Province'], ['name'])
@@ -58,33 +64,27 @@ def read_daily_report_data_csv_JHU(file):
     with open(file, 'rt') as csvfile:
         rows = csv.reader(csvfile, delimiter=',', quotechar='"')
         # skip header
-        next(rows)
+        header = next(rows)
+        if len(header) > 8:
+            file_type = 'new'
+        else:
+            file_type = 'old'
+        log.info("File type: {}".format(file_type))
 
         for row in rows:
-            country = row[1]
-            province = row[0]
-            # if no name for province, use country name
-            if not province:
-                province = '{}_complete'.format(country)
 
-            date = None
-            try:
-                date = parse(row[2])
-            except ParserError:
-                log.debug("Cannot parse date string {}".format(row[2]))
-
-            uuid = country+province+str(date)
-            confirmed = int(row[3]) if row[3] else 'na'
-            death = int(row[4]) if row[4] else 'na'
-            recovered = int(row[5]) if row[5] else 'na'
-
-            lat = row[6] if len(row) >= 7 else None
-            long = row[7] if len(row) >= 8 else None
+            if file_type == 'old':
+                country, province, date, confirmed, death, recovered, lat, long = parse_jhu_old_file_row(row)
+            elif file_type == 'new':
+                country, province, date, confirmed, death, recovered, lat, long = parse_jhu_new_file_row(row)
 
             province_dict = {'name': province}
             if lat and long:
                 province_dict['latitude'] = lat
                 province_dict['longitude'] = long
+
+            uuid = country + province + str(date)
+
             provinces.add_unique(province_dict)
 
             countries.add_unique({'name': country})
@@ -96,6 +96,93 @@ def read_daily_report_data_csv_JHU(file):
             province_rep_update.add_relationship({'name': province}, {'uuid': uuid}, {'source': 'jhu'})
 
     return countries, provinces, updates, province_in_country, province_rep_update
+
+
+def parse_jhu_old_file_row(row):
+    """
+    Old format (until 03-21-2020)
+        Province/State,Country/Region,Last Update,Confirmed,Deaths,Recovered,Latitude,Longitude
+
+    :param row:
+    """
+    country = row[1]
+    province = row[0]
+    # if no name for province, use country name
+    if not province:
+        province = '{}_complete'.format(country)
+
+    date = None
+    try:
+        date = parse(row[2])
+    except ParserError:
+        log.debug("Cannot parse date string {}".format(row[2]))
+
+    try:
+        confirmed = int(row[3])
+    except ValueError:
+        log.debug("Cannot parse integer {}".format(row[3]))
+        confirmed = 'na'
+
+    try:
+        death = int(row[4])
+    except ValueError:
+        log.debug("Cannot parse integer {}".format(row[4]))
+        death = 'na'
+
+    try:
+        recovered = int(row[5])
+    except ValueError:
+        log.debug("Cannot parse integer {}".format(row[5]))
+        recovered = 'na'
+
+    lat = row[6] if len(row) >= 7 else None
+    long = row[7] if len(row) >= 8 else None
+
+    return country, province, date, confirmed, death, recovered, lat, long
+
+
+def parse_jhu_new_file_row(row):
+    """
+    New format:
+        FIPS,Admin2,Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths,Recovered,Active,Combined_Key
+
+    :param row:
+    :return:
+    """
+    country = row[3]
+    province = row[2]
+    # if no name for province, use country name
+    if not province:
+        province = '{}_complete'.format(country)
+
+    date = None
+    try:
+        date = parse(row[4])
+    except ParserError:
+        log.debug("Cannot parse date string {}".format(row[2]))
+
+    try:
+        confirmed = int(row[7])
+    except ValueError:
+        log.debug("Cannot parse integer {}".format(row[7]))
+        confirmed = 'na'
+
+    try:
+        death = int(row[8])
+    except ValueError:
+        log.debug("Cannot parse integer {}".format(row[8]))
+        death = 'na'
+
+    try:
+        recovered = int(row[9])
+    except ValueError:
+        log.debug("Cannot parse integer {}".format(row[9]))
+        recovered = 'na'
+
+    lat = row[5]
+    long = row[6]
+
+    return country, province, date, confirmed, death, recovered, lat, long
 
 
 def load_wpp_data(base_path, graph):
@@ -128,9 +215,9 @@ def load_wpp_data(base_path, graph):
             age_group = row[6]
             age_group_start = int(row[7])
             age_group_span = row[8]
-            pop_male = int(float((row[9]))*1000)
-            pop_female = int(float((row[10]))*1000)
-            pop_total = int(float((row[11]))*1000)
+            pop_male = int(float((row[9])) * 1000)
+            pop_female = int(float((row[10])) * 1000)
+            pop_total = int(float((row[11])) * 1000)
 
             # only take 2019
             if time == 2019:

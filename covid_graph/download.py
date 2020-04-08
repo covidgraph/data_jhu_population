@@ -70,7 +70,7 @@ def download_population_data(target_dir, skip_existing=False):
     return target_file
 
 
-def unzip_file(zip_file_path, skip_existing=True):
+def unzip_file(zip_file_path, skip_existing=False):
     """
     Unzip a zip file at the same directory. Return the path to the unzipped directory.
 

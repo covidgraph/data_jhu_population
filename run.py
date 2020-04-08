@@ -5,6 +5,8 @@ import py2neo
 logging.basicConfig(level=logging.DEBUG)
 logging.getLogger('py2neo.connect.bolt').setLevel(logging.WARNING)
 logging.getLogger('py2neo.connect').setLevel(logging.WARNING)
+logging.getLogger('graphio').setLevel(logging.WARNING)
+logging.getLogger('neobolt').setLevel(logging.WARNING)
 
 log = logging.getLogger(__name__)
 
@@ -12,14 +14,14 @@ log = logging.getLogger(__name__)
 from covid_graph import download, load_to_neo4j, helper, post
 
 ROOT_DIR = os.getenv('ROOT_DIR', '/download')
-NEO4J_URL = os.getenv('NEO4J_URL', 'bolt://localhost:7687')
-NEO4J_USER = os.getenv('NEO4J_USER', 'neo4j')
-NEO4J_PASSWORD = os.getenv('NEO4J_PASSWORD', 'test')
+GC_NEO4J_URL = os.getenv('GC_NEO4J_URL', 'bolt://localhost:7687')
+GC_NEO4J_USER = os.getenv('GC_NEO4J_USER', 'neo4j')
+GC_NEO4J_PASSWORD = os.getenv('GC_NEO4J_PASSWORD', 'test')
 
-for v in [ROOT_DIR, NEO4J_URL, NEO4J_USER, NEO4J_PASSWORD]:
+for v in [ROOT_DIR, GC_NEO4J_URL, GC_NEO4J_USER, GC_NEO4J_PASSWORD]:
     log.debug(v)
 
-graph = py2neo.Graph(NEO4J_URL, user=NEO4J_USER, password=NEO4J_PASSWORD)
+graph = py2neo.Graph(GC_NEO4J_URL, user=GC_NEO4J_USER, password=GC_NEO4J_PASSWORD)
 log.debug(graph)
 
 result = list(graph.run("MATCH (a) RETURN a LIMIT 1"))

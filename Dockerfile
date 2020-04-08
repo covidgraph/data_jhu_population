@@ -12,3 +12,5 @@ WORKDIR /src
 RUN pip install --no-cache-dir -r requirements.txt
 
 ENV PYTHONPATH="/src:${PYTHONPATH}"
+
+CMD ["python", "run.py"]

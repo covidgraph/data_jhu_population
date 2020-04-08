@@ -4,8 +4,7 @@ services:
   run_data_jhu_population:
     build: .
     environment:
-      - NEO4J_URL=bolt://host.docker.internal:7687
-      - NEO4J_USER=neo4j
-      - NEO4J_PASSWORD=test
-    command: python run.py
-    #command: ls
+      - GC_NEO4J_URL=bolt://host.docker.internal:7687
+      - GC_NEO4J_USER=neo4j
+      - GC_NEO4J_PASSWORD=test
+    #command: python run.py
