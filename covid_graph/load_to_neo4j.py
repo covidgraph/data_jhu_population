@@ -4,6 +4,7 @@ import csv
 from uuid import uuid4
 from graphio import NodeSet, RelationshipSet
 from dateutil.parser import parse
+from dateutil.parser import ParserError
 
 log = logging.getLogger(__name__)
 
@@ -66,7 +67,12 @@ def read_daily_report_data_csv_JHU(file):
             if not province:
                 province = '{}_complete'.format(country)
 
-            date = parse(row[2])
+            date = None
+            try:
+                date = parse(row[2])
+            except ParserError:
+                log.debug("Cannot parse date string {}".format(row[2]))
+
             uuid = country+province+str(date)
             confirmed = int(row[3]) if row[3] else 'na'
             death = int(row[4]) if row[4] else 'na'

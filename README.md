@@ -9,7 +9,7 @@ The graph is available in a Neo4j Sandbox: https://10-0-1-172-33065.neo4jsandbox
 You can add it to Neo4j Desktop with the bolt URL, same user/password: `bolt://100.24.206.62:33064`
 
 ## Datamodel 
-![Data Model](datamodel.png)
+![Data Model](docs/datamodel.png)
 
 ## Queries
 
