@@ -1,25 +1,25 @@
 
-name: Docker Image CI
+# name: Docker Image CI
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+# on:
+#   push:
+#     branches: [ master ]
+#   pull_request:
+#     branches: [ master ]
 
-jobs:
+# jobs:
 
-  build:
+#   build:
 
-    runs-on: ubuntu-latest
+#     runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag data_jhu_population:latest
-    - name: Publish to Registry
-      uses: HurricanKai/Publish-Docker-Github-Action@master
-      with:
-        name: covidgraph/data_jhu_population
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: Build the Docker image
+#       run: docker build . --file Dockerfile --tag data_jhu_population:latest
+#     - name: Publish to Registry
+#       uses: HurricanKai/Publish-Docker-Github-Action@master
+#       with:
+#         name: covidgraph/data_jhu_population
+#         username: ${{ secrets.DOCKERHUB_USERNAME }}
+#         password: ${{ secrets.DOCKERHUB_PASSWORD }}
