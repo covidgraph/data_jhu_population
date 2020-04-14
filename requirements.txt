@@ -4,3 +4,4 @@ py2neo
 requests
 python-dateutil
 graphio>=0.0.12
+pytest

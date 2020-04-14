@@ -3,9 +3,13 @@ FROM python:3
 RUN mkdir /src
 RUN mkdir /download
 
+# copy covid_graph package
 COPY covid_graph /src/covid_graph
+# copy run.py script
 COPY run.py /src/
 COPY requirements.txt /src/
+# copy tests
+COPY tests /src/test
 
 WORKDIR /src
 

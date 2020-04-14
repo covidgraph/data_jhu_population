@@ -7,4 +7,5 @@ services:
       - GC_NEO4J_URL=bolt://host.docker.internal:7687
       - GC_NEO4J_USER=neo4j
       - GC_NEO4J_PASSWORD=test
+      - RUN_MODE=test
     #command: python run.py

@@ -1,6 +1,8 @@
 import os
+import sys
 import logging
 import py2neo
+import pytest
 
 logging.basicConfig(level=logging.DEBUG)
 logging.getLogger('py2neo.connect.bolt').setLevel(logging.WARNING)
@@ -11,41 +13,47 @@ logging.getLogger('neobolt').setLevel(logging.WARNING)
 log = logging.getLogger(__name__)
 
 # import and setup
-from covid_graph import download, load_to_neo4j, helper, post
+from covid_graph import helper, post, jhu, unwpp
 
 ROOT_DIR = os.getenv('ROOT_DIR', '/download')
 GC_NEO4J_URL = os.getenv('GC_NEO4J_URL', 'bolt://localhost:7687')
 GC_NEO4J_USER = os.getenv('GC_NEO4J_USER', 'neo4j')
 GC_NEO4J_PASSWORD = os.getenv('GC_NEO4J_PASSWORD', 'test')
+RUN_MODE = os.getenv('RUN_MODE', 'test')
 
-for v in [ROOT_DIR, GC_NEO4J_URL, GC_NEO4J_USER, GC_NEO4J_PASSWORD]:
-    log.debug(v)
+if RUN_MODE.lower() == 'test':
+    log.info("Run tests")
+    pytest.main()
 
-graph = py2neo.Graph(GC_NEO4J_URL, user=GC_NEO4J_USER, password=GC_NEO4J_PASSWORD)
-log.debug(graph)
+else:
+    for v in [ROOT_DIR, GC_NEO4J_URL, GC_NEO4J_USER, GC_NEO4J_PASSWORD]:
+        log.debug(v)
 
-result = list(graph.run("MATCH (a) RETURN a LIMIT 1"))
-log.debug(result)
+    graph = py2neo.Graph(GC_NEO4J_URL, user=GC_NEO4J_USER, password=GC_NEO4J_PASSWORD)
+    log.debug(graph)
 
-# setup DB
-helper.setup_db(graph)
+    result = list(graph.run("MATCH (a) RETURN a LIMIT 1"))
+    log.debug(result)
 
-if not os.path.exists(ROOT_DIR):
-    os.makedirs(ROOT_DIR)
-###
+    # setup DB
+    helper.setup_db(graph)
 
-# download data
-jhu_zip_file = download.download_jhu(ROOT_DIR)
-jhu_dir = download.unzip_file(jhu_zip_file)
+    if not os.path.exists(ROOT_DIR):
+        os.makedirs(ROOT_DIR)
+    ###
 
-wpp_csv_file = download.download_population_data(ROOT_DIR, skip_existing=True)
-###
+    # download data
+    jhu_zip_file = covid_graph.jhu.download_jhu(ROOT_DIR)
+    jhu_dir = covid_graph.helper.unzip_file(jhu_zip_file)
 
-# load to Neo4j
-load_to_neo4j.read_daily_report_JHU(jhu_dir, graph)
-load_to_neo4j.load_wpp_data(ROOT_DIR, graph)
-###
+    wpp_csv_file = covid_graph.unwpp.download_population_data(ROOT_DIR, skip_existing=True)
+    ###
 
-# post process
-post.set_latest_update(graph)
-###
+    # load to Neo4j
+    covid_graph.jhu.read_daily_report_JHU(jhu_dir, graph)
+    covid_graph.unwpp.load_wpp_data(ROOT_DIR, graph)
+    ###
+
+    # post process
+    post.set_latest_update(graph)
+    ###

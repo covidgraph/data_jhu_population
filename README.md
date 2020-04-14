@@ -1,12 +1,29 @@
-# A Knowledge Graph on Covid-19
+# CovidGraph data loading module for case statistics from JHU and UN World Population data 
 
-A knowledge graph that integrates case numbers reported by John Hopkins University and population data from the UN. Work in progress, looking for more datasources, PR welcome!
+Build Docker image:
 
-The graph is available in a Neo4j Sandbox: https://10-0-1-172-33065.neo4jsandbox.com/browser/
+```shell script
+docker build -t data_jhu_population .
+```
 
-**User:** public, **Password:** public
+You need to set the following environment variables in the Docker container to run it:
 
-You can add it to Neo4j Desktop with the bolt URL, same user/password: `bolt://100.24.206.62:33064`
+```shell script
+GC_NEO4J_URL: URL of Neo4j instance
+GC_NEO4J_USER: Neo4j username
+GC_NEO4J_PASSWORD: Neo4j password
+RUN_MODE: test or full
+```
+### RUN_MODE
+The `test` mode runs some basic tests including availability of files. it is meant to be executed at runtime
+in a data loading pipeline. The goal is to hae some basic sanity checks and avoid long running downloads if something is wrong.
+This is only a part of the full test suit that is executed as part of CI.
+
+Run the container:
+
+```shell script
+docker run --env GC_NEO4J_URL=bolt://myhost:7687 --env GC_NEO4J_USER=neo4j --env GC_NEO4J_PASSWORD=password --env RUN_MODE=test data_jhu_population
+```
 
 ## Datamodel 
 ![Data Model](docs/datamodel.png)
