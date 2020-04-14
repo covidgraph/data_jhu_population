@@ -1,8 +1,11 @@
 import os
 import shutil
 import zipfile
+import logging
 
 from py2neo.database import ClientError
+
+log = logging.getLogger(__name__)
 
 
 def setup_db(graph):

@@ -43,15 +43,15 @@ else:
     ###
 
     # download data
-    jhu_zip_file = covid_graph.jhu.download_jhu(ROOT_DIR)
-    jhu_dir = covid_graph.helper.unzip_file(jhu_zip_file)
+    jhu_zip_file = jhu.download_jhu(ROOT_DIR)
+    jhu_dir = helper.unzip_file(jhu_zip_file)
 
-    wpp_csv_file = covid_graph.unwpp.download_population_data(ROOT_DIR, skip_existing=True)
+    wpp_csv_file = unwpp.download_population_data(ROOT_DIR, skip_existing=True)
     ###
 
     # load to Neo4j
-    covid_graph.jhu.read_daily_report_JHU(jhu_dir, graph)
-    covid_graph.unwpp.load_wpp_data(ROOT_DIR, graph)
+    jhu.read_daily_report_JHU(jhu_dir, graph)
+    unwpp.load_wpp_data(ROOT_DIR, graph)
     ###
 
     # post process
