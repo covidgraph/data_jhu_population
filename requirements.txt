@@ -2,6 +2,6 @@ neo4j
 py2neo
 #git+https://github.com/technige/py2neo.git@v5#egg=py2neo
 requests
-python-dateutil
+python-dateutil>=2.8.1
 graphio>=0.0.12
 pytest
