@@ -2,7 +2,7 @@ import os
 import sys
 import logging
 import py2neo
-import pytest
+
 
 logging.basicConfig(level=logging.DEBUG)
 logging.getLogger('py2neo.connect.bolt').setLevel(logging.WARNING)
@@ -22,6 +22,7 @@ GC_NEO4J_PASSWORD = os.getenv('GC_NEO4J_PASSWORD', 'test')
 RUN_MODE = os.getenv('RUN_MODE', 'prod')
 
 if RUN_MODE.lower() == 'test':
+    import pytest
     log.info("Run tests")
     pytest.main()
 
