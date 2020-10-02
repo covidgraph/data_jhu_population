@@ -3,7 +3,7 @@ import shutil
 import zipfile
 import logging
 
-from py2neo.database import ClientError
+from py2neo import ClientError
 
 log = logging.getLogger(__name__)
 
@@ -23,10 +23,12 @@ def setup_db(graph):
     ]
 
     for index in indexes:
+        log.info(f"Try to create index {index[0]}: {index[1]}")
         try:
             graph.schema.create_index(index[0], index[1])
-        except ClientError:
-            pass
+        except ClientError as e:
+            log.info(f"Cannot create index {index[0]}: {index[1]}, pass and continue")
+            log.error(e)
 
 
 def unzip_file(zip_file_path, skip_existing=False):

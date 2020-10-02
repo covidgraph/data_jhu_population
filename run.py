@@ -1,14 +1,13 @@
 import os
-import sys
 import logging
 import py2neo
-
+import json
 
 logging.basicConfig(level=logging.DEBUG)
-logging.getLogger('py2neo.connect.bolt').setLevel(logging.WARNING)
-logging.getLogger('py2neo.connect').setLevel(logging.WARNING)
+logging.getLogger('py2neo.client.bolt').setLevel(logging.WARNING)
+logging.getLogger('py2neo.client').setLevel(logging.WARNING)
+logging.getLogger('urllib3.connectionpool').setLevel(logging.WARNING)
 logging.getLogger('graphio').setLevel(logging.WARNING)
-logging.getLogger('neobolt').setLevel(logging.WARNING)
 
 log = logging.getLogger(__name__)
 
@@ -16,32 +15,33 @@ log = logging.getLogger(__name__)
 from covid_graph import helper, post, jhu, unwpp
 
 ROOT_DIR = os.getenv('ROOT_DIR', '/download')
-GC_NEO4J_URL = os.getenv('GC_NEO4J_URL', 'bolt://localhost:7687')
-GC_NEO4J_USER = os.getenv('GC_NEO4J_USER', 'neo4j')
-GC_NEO4J_PASSWORD = os.getenv('GC_NEO4J_PASSWORD', 'test')
 RUN_MODE = os.getenv('RUN_MODE', 'prod')
+
+NEO4J_CONFIG_STRING = os.getenv("NEO4J")
+
+try:
+    log.info(NEO4J_CONFIG_STRING)
+    NEO4J_CONFIG_DICT = json.loads(NEO4J_CONFIG_STRING)
+except json.decoder.JSONDecodeError:
+    # try to replace single quotes with double quotes
+    # JSON always expects double quotes, common mistake when writing JSON strings
+    NEO4J_CONFIG_STRING = NEO4J_CONFIG_STRING.replace("'", '"')
+    log.info(NEO4J_CONFIG_STRING)
+    NEO4J_CONFIG_DICT = json.loads(NEO4J_CONFIG_STRING)
 
 if RUN_MODE.lower() == 'test':
     import pytest
+
     log.info("Run tests")
     pytest.main()
 
 else:
-    for v in [ROOT_DIR, GC_NEO4J_URL, GC_NEO4J_USER, GC_NEO4J_PASSWORD]:
-        log.debug(v)
 
-    graph = py2neo.Graph(GC_NEO4J_URL, user=GC_NEO4J_USER, password=GC_NEO4J_PASSWORD)
-    log.debug(graph)
-
-    result = list(graph.run("MATCH (a) RETURN a LIMIT 1"))
-    log.debug(result)
+    graph = py2neo.Graph(host=NEO4J_CONFIG_DICT['host'], user=NEO4J_CONFIG_DICT['user'],
+                         password=NEO4J_CONFIG_DICT['password'], secure=NEO4J_CONFIG_DICT['secure'], verify=False)
 
     # setup DB
     helper.setup_db(graph)
-
-    if not os.path.exists(ROOT_DIR):
-        os.makedirs(ROOT_DIR)
-    ###
 
     # download data
     jhu_zip_file = jhu.download_jhu(ROOT_DIR)
