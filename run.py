@@ -37,8 +37,7 @@ if RUN_MODE.lower() == 'test':
 
 else:
 
-    graph = py2neo.Graph(host=NEO4J_CONFIG_DICT['host'], user=NEO4J_CONFIG_DICT['user'],
-                         password=NEO4J_CONFIG_DICT['password'], secure=NEO4J_CONFIG_DICT['secure'], verify=False)
+    graph = py2neo.Graph(**NEO4J_CONFIG_DICT)
 
     # setup DB
     helper.setup_db(graph)
