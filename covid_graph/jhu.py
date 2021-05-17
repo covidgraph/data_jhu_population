@@ -58,11 +58,8 @@ def read_daily_report_JHU(path_to_jhu, graph):
             countries, provinces, updates, province_in_country, province_rep_update = read_daily_report_data_csv_JHU(
                 file_path)
 
-            log.debug('MERGE countries')
             countries.merge(graph)
-            log.debug('MERGE provinces')
             provinces.merge(graph)
-            log.debug('CREATE Updates')
             updates.merge(graph)
 
             province_rep_update.merge(graph)
@@ -145,24 +142,25 @@ def parse_jhu_old_file_row(row):
     try:
         date = parse(row[2])
     except ParserError:
-        log.debug("Cannot parse date string {}".format(row[2]))
+        pass
+        #log.debug("Cannot parse date string {}".format(row[2]))
 
     try:
         confirmed = int(row[3])
     except ValueError:
-        log.debug("Cannot parse integer {}".format(row[3]))
+        #log.debug("Cannot parse integer {}".format(row[3]))
         confirmed = 'na'
 
     try:
         death = int(row[4])
     except ValueError:
-        log.debug("Cannot parse integer {}".format(row[4]))
+        #log.debug("Cannot parse integer {}".format(row[4]))
         death = 'na'
 
     try:
         recovered = int(row[5])
     except ValueError:
-        log.debug("Cannot parse integer {}".format(row[5]))
+        #log.debug("Cannot parse integer {}".format(row[5]))
         recovered = 'na'
 
     lat = row[6] if len(row) >= 7 else None
@@ -194,19 +192,19 @@ def parse_jhu_new_file_row(row):
     try:
         confirmed = int(row[7])
     except ValueError:
-        log.debug("Cannot parse integer {}".format(row[7]))
+        #log.debug("Cannot parse integer {}".format(row[7]))
         confirmed = 'na'
 
     try:
         death = int(row[8])
     except ValueError:
-        log.debug("Cannot parse integer {}".format(row[8]))
+        #log.debug("Cannot parse integer {}".format(row[8]))
         death = 'na'
 
     try:
         recovered = int(row[9])
     except ValueError:
-        log.debug("Cannot parse integer {}".format(row[9]))
+        #log.debug("Cannot parse integer {}".format(row[9]))
         recovered = 'na'
 
     lat = row[5]
